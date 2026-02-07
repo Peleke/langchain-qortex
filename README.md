@@ -53,8 +53,8 @@ vs.feedback({docs[0].id: "accepted", docs[-1].id: "rejected"})
 
 ## Documentation
 
+- [Full VectorStore guide](docs/vectorstore.md) (graph exploration, rules, feedback loop)
 - [qortex docs](https://peleke.github.io/qortex/)
-- [LangChain VectorStore case study](https://peleke.github.io/qortex/tutorials/case-studies/langchain-vectorstore/)
 - [Querying guide](https://peleke.github.io/qortex/guides/querying/)
 
 ## License
