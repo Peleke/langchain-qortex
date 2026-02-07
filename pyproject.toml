@@ -1,0 +1,82 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "langchain-qortex"
+description = "LangChain integration for qortex graph-enhanced retrieval"
+license = { text = "MIT" }
+readme = "README.md"
+authors = [
+    { name = "Peleke Sengstacke" },
+]
+
+version = "0.1.0"
+requires-python = ">=3.11,<4.0"
+dependencies = [
+    "langchain-core>=0.3.0,<1.0.0",
+    "qortex>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Peleke/langchain-qortex"
+Documentation = "https://peleke.github.io/qortex/tutorials/case-studies/langchain-vectorstore/"
+Source = "https://github.com/Peleke/langchain-qortex"
+Issues = "https://github.com/Peleke/langchain-qortex/issues"
+
+[dependency-groups]
+test = [
+    "pytest>=8.0.0,<9.0.0",
+    "pytest-cov>=4.1.0,<6.0.0",
+    "pytest-asyncio>=0.23.0,<1.0.0",
+    "qortex[vec]",
+]
+lint = ["ruff>=0.4.0,<1.0.0"]
+dev = ["langchain-core"]
+typing = [
+    "mypy>=1.8.0,<2.0.0",
+    "langchain-core",
+]
+
+[tool.uv.sources]
+qortex = { path = "../qortex-track-c", editable = true }
+
+[tool.mypy]
+disallow_untyped_defs = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "D"]
+ignore = [
+    "E501",   # Line length handled by formatter
+    "D100",   # Module docstrings not required everywhere
+    "D104",   # Package docstrings not required
+    "D203",   # Conflicts with D211
+    "D213",   # Conflicts with D212
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/**/*.py" = [
+    "S101",   # Tests need assertions
+    "SLF001", # Private member access in tests
+    "D",      # Docstring checks in tests
+]
+
+[tool.coverage.run]
+omit = ["tests/*"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers --strict-config --durations=5 --cov=langchain_qortex"
+markers = [
+    "requires: mark tests as requiring a specific library",
+]
+asyncio_mode = "auto"
