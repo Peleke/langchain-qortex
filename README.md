@@ -1,6 +1,18 @@
+<div align="center">
+
 # langchain-qortex
 
+### LangChain VectorStore Backed by Graph-Enhanced Retrieval
+
+[![PyPI](https://img.shields.io/pypi/v/langchain-qortex?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/langchain-qortex/)
+[![Python](https://img.shields.io/pypi/pyversions/langchain-qortex?style=for-the-badge&logo=python&logoColor=white)](https://pypi.org/project/langchain-qortex/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
 LangChain integration for [qortex](https://github.com/Peleke/qortex) graph-enhanced retrieval.
+
+[Install](#install) · [Quick Start](#quick-start) · [VectorStore Guide](docs/vectorstore.md) · [qortex](https://github.com/Peleke/qortex)
+
+</div>
 
 ## Install
 
