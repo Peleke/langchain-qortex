@@ -103,9 +103,7 @@ class QortexVectorStore(VectorStore):
             ids=ids,
         )
 
-    def similarity_search(
-        self, query: str, k: int = 4, **kwargs: Any
-    ) -> list[Document]:
+    def similarity_search(self, query: str, k: int = 4, **kwargs: Any) -> list[Document]:
         """Return docs most similar to query.
 
         Args:
@@ -136,7 +134,10 @@ class QortexVectorStore(VectorStore):
         min_confidence = kwargs.get("min_confidence", 0.0)
 
         result = self._client.query(
-            context=query, domains=domains, top_k=k, min_confidence=min_confidence,
+            context=query,
+            domains=domains,
+            top_k=k,
+            min_confidence=min_confidence,
         )
         self._last_query_id = result.query_id
 
@@ -162,7 +163,7 @@ class QortexVectorStore(VectorStore):
         return docs_and_scores
 
     def _select_relevance_score_fn(self):
-        """qortex scores are already cosine similarity in [0, 1]."""
+        """Qortex scores are already cosine similarity in [0, 1]."""
         return lambda score: score
 
     @classmethod
@@ -227,11 +228,13 @@ class QortexVectorStore(VectorStore):
                 "node_id": node.id,
             }
             meta.update(node.properties)
-            docs.append(Document(
-                page_content=f"{node.name}: {node.description}",
-                metadata=meta,
-                id=node.id,
-            ))
+            docs.append(
+                Document(
+                    page_content=f"{node.name}: {node.description}",
+                    metadata=meta,
+                    id=node.id,
+                )
+            )
         return docs
 
     # -- qortex extras: graph exploration + rules + feedback --

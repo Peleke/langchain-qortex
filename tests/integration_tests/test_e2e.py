@@ -11,12 +11,12 @@ import hashlib
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_core.vectorstores import VectorStore
-
-from langchain_qortex import QortexVectorStore
 from qortex.client import LocalQortexClient
 from qortex.core.memory import InMemoryBackend
 from qortex.core.models import ConceptEdge, ConceptNode, ExplicitRule, RelationType
 from qortex.vec.index import NumpyVectorIndex
+
+from langchain_qortex import QortexVectorStore
 
 DIMS = 32
 
@@ -61,24 +61,32 @@ def make_security_graph():
 
     nodes = [
         ConceptNode(
-            id="sec:oauth", name="OAuth2",
+            id="sec:oauth",
+            name="OAuth2",
             description="OAuth2 authorization framework for delegated access to APIs",
-            domain="security", source_id="security-handbook",
+            domain="security",
+            source_id="security-handbook",
         ),
         ConceptNode(
-            id="sec:jwt", name="JWT",
+            id="sec:jwt",
+            name="JWT",
             description="JSON Web Tokens for stateless authentication and claims transfer",
-            domain="security", source_id="security-handbook",
+            domain="security",
+            source_id="security-handbook",
         ),
         ConceptNode(
-            id="sec:rbac", name="RBAC",
+            id="sec:rbac",
+            name="RBAC",
             description="Role-based access control restricts system access by user roles",
-            domain="security", source_id="security-handbook",
+            domain="security",
+            source_id="security-handbook",
         ),
         ConceptNode(
-            id="sec:mfa", name="MFA",
+            id="sec:mfa",
+            name="MFA",
             description="Multi-factor authentication requires multiple verification factors",
-            domain="security", source_id="security-handbook",
+            domain="security",
+            source_id="security-handbook",
         ),
     ]
 
@@ -87,40 +95,64 @@ def make_security_graph():
 
     texts = [f"{n.name}: {n.description}" for n in nodes]
     embeddings = embedding.embed(texts)
-    for node, emb in zip(nodes, embeddings):
+    for node, emb in zip(nodes, embeddings, strict=True):
         backend.add_embedding(node.id, emb)
 
     ids = [n.id for n in nodes]
     vector_index.add(ids, embeddings)
 
-    backend.add_edge(ConceptEdge(
-        source_id="sec:oauth", target_id="sec:jwt",
-        relation_type=RelationType.REQUIRES,
-    ))
-    backend.add_edge(ConceptEdge(
-        source_id="sec:oauth", target_id="sec:rbac",
-        relation_type=RelationType.USES,
-    ))
-    backend.add_edge(ConceptEdge(
-        source_id="sec:mfa", target_id="sec:oauth",
-        relation_type=RelationType.SUPPORTS,
-    ))
+    backend.add_edge(
+        ConceptEdge(
+            source_id="sec:oauth",
+            target_id="sec:jwt",
+            relation_type=RelationType.REQUIRES,
+        )
+    )
+    backend.add_edge(
+        ConceptEdge(
+            source_id="sec:oauth",
+            target_id="sec:rbac",
+            relation_type=RelationType.USES,
+        )
+    )
+    backend.add_edge(
+        ConceptEdge(
+            source_id="sec:mfa",
+            target_id="sec:oauth",
+            relation_type=RelationType.SUPPORTS,
+        )
+    )
 
-    backend.add_rule(ExplicitRule(
-        id="rule:oauth-required", text="Always use OAuth2 for third-party API access",
-        domain="security", source_id="security-handbook",
-        concept_ids=["sec:oauth"], category="security",
-    ))
-    backend.add_rule(ExplicitRule(
-        id="rule:rotate-jwt", text="Rotate JWT signing keys every 90 days",
-        domain="security", source_id="security-handbook",
-        concept_ids=["sec:oauth", "sec:jwt"], category="operations",
-    ))
-    backend.add_rule(ExplicitRule(
-        id="rule:rbac-before-code", text="Define RBAC roles before writing authorization code",
-        domain="security", source_id="security-handbook",
-        concept_ids=["sec:rbac"], category="architectural",
-    ))
+    backend.add_rule(
+        ExplicitRule(
+            id="rule:oauth-required",
+            text="Always use OAuth2 for third-party API access",
+            domain="security",
+            source_id="security-handbook",
+            concept_ids=["sec:oauth"],
+            category="security",
+        )
+    )
+    backend.add_rule(
+        ExplicitRule(
+            id="rule:rotate-jwt",
+            text="Rotate JWT signing keys every 90 days",
+            domain="security",
+            source_id="security-handbook",
+            concept_ids=["sec:oauth", "sec:jwt"],
+            category="operations",
+        )
+    )
+    backend.add_rule(
+        ExplicitRule(
+            id="rule:rbac-before-code",
+            text="Define RBAC roles before writing authorization code",
+            domain="security",
+            source_id="security-handbook",
+            concept_ids=["sec:rbac"],
+            category="architectural",
+        )
+    )
 
     client = LocalQortexClient(
         vector_index=vector_index,
